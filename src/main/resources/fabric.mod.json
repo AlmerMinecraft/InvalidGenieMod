@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "invalid_genie",
+	"version": "${version}",
+	"name": "Invalid Genie",
+	"description": "This mod is very very annoying! It adds an invalid genie, that will try to help you in your game, but will spoil everything.",
+	"authors": [
+		"Almer"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/invalid_genie/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.invalid_genie.InvalidGenieMod"
+		],
+		"client": [
+			"com.invalid_genie.InvalidGenieClient"
+		]
+	},
+	"mixins": [
+		"invalid_genie.mixins.json",
+		{
+			"config": "invalid_genie.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.15.0",
+		"minecraft": "~1.20.4",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
