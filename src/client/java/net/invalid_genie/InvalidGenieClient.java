@@ -1,4 +1,4 @@
-package com.invalid_genie;
+package net.invalid_genie;
 
 import net.fabricmc.api.ClientModInitializer;
 

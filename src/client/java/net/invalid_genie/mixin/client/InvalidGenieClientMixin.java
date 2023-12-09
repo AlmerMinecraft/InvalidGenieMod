@@ -1,4 +1,4 @@
-package com.invalid_genie.mixin.client;
+package net.invalid_genie.mixin.client;
 
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;
