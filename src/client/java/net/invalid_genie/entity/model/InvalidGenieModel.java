@@ -65,7 +65,7 @@ public class InvalidGenieModel<T extends InvalidGenieEntity> extends SinglePartE
 	@Override
 	public void setAngles(T entity, float f, float g, float h, float i, float j) {
 		this.getPart().traverse().forEach(ModelPart::resetTransform);
-		this.updateAnimation(entity.idlingAnimationState, InvalidGenieAnimation.IdleGenie, h, 1.0f);
+		this.updateAnimation(entity.idlingAnimationState, InvalidGenieAnimation.IdleGenie, h);
 		this.updateAnimation(entity.magicAnimationState, InvalidGenieAnimation.MagicGenie, h);
 	}
 }

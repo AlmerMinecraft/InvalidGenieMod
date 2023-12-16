@@ -16,10 +16,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.invalid_genie.InvalidGenieMod"
+			"net.invalid_genie.InvalidGenieMod"
 		],
 		"client": [
-			"com.invalid_genie.InvalidGenieClient"
+			"net.invalid_genie.InvalidGenieClient"
 		]
 	},
 	"mixins": [

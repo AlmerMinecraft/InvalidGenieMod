@@ -51,20 +51,22 @@ public class InvalidGenieAnimation {
 			new Keyframe(0.25F, AnimationHelper.createRotationalVector(0.0F, 0.0F, 62.5F), Transformation.Interpolations.CUBIC),
 			new Keyframe(0.5F, AnimationHelper.createRotationalVector(0.0F, 0.0F, 107.5F), Transformation.Interpolations.CUBIC),
 			new Keyframe(0.75F, AnimationHelper.createRotationalVector(0.0F, 0.0F, 65.0F), Transformation.Interpolations.CUBIC),
-			new Keyframe(1.0F, AnimationHelper.createRotationalVector(0.0F, 0.0F, 112.5F), Transformation.Interpolations.CUBIC)
+			new Keyframe(1.0F, AnimationHelper.createRotationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.CUBIC)
 		))
 		.addBoneAnimation("left_arm", new Transformation(Transformation.Targets.ROTATE,
 			new Keyframe(0.0F, AnimationHelper.createRotationalVector(0.0F, 0.0F, -112.5F), Transformation.Interpolations.CUBIC),
 			new Keyframe(0.25F, AnimationHelper.createRotationalVector(0.0F, 0.0F, -75.0F), Transformation.Interpolations.CUBIC),
 			new Keyframe(0.5F, AnimationHelper.createRotationalVector(0.0F, 0.0F, -107.5F), Transformation.Interpolations.CUBIC),
 			new Keyframe(0.75F, AnimationHelper.createRotationalVector(0.0F, 0.0F, -65.0F), Transformation.Interpolations.CUBIC),
-			new Keyframe(1.0F, AnimationHelper.createRotationalVector(0.0F, 0.0F, -112.5F), Transformation.Interpolations.CUBIC)
+			new Keyframe(1.0F, AnimationHelper.createRotationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.CUBIC)
 		))
 		.addBoneAnimation("left_ear", new Transformation(Transformation.Targets.ROTATE,
-			new Keyframe(0.0F, AnimationHelper.createRotationalVector(17.5F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR)
+			new Keyframe(0.0F, AnimationHelper.createRotationalVector(17.5F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
+				new Keyframe(1.0F, AnimationHelper.createRotationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.CUBIC)
 		))
 		.addBoneAnimation("right_ear", new Transformation(Transformation.Targets.ROTATE,
-			new Keyframe(0.0F, AnimationHelper.createRotationalVector(17.5F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR)
+			new Keyframe(0.0F, AnimationHelper.createRotationalVector(17.5F, 0.0F, 0.0F), Transformation.Interpolations.LINEAR),
+				new Keyframe(1.0F, AnimationHelper.createRotationalVector(0.0F, 0.0F, 0.0F), Transformation.Interpolations.CUBIC)
 		))
 		.build();
 
