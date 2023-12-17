@@ -3,8 +3,9 @@
 	"package": "net.invalid_genie.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"InvalidGenieMixin",
 		"PlayerEntityMixin"
+	],
+	"client": [
 	],
 	"injectors": {
 		"defaultRequire": 1

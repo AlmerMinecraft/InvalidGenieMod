@@ -3,7 +3,8 @@
 	"package": "net.invalid_genie.mixin.client",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"InvalidGenieClientMixin",
+	],
+	"client": [
 	],
 	"injectors": {
 		"defaultRequire": 1
