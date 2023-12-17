@@ -12,10 +12,15 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectCategory;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.BeeEntity;
 import net.minecraft.entity.passive.PassiveEntity;
@@ -35,6 +40,7 @@ import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
@@ -46,12 +52,16 @@ import org.spongepowered.tools.obfuscation.struct.Message;
 
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.jar.Attributes;
 
 public class InvalidGenieEntity extends FlyingEntity implements Flutterer {
     public final AnimationState idlingAnimationState = new AnimationState();
     public final AnimationState magicAnimationState = new AnimationState();
     private int idleAnimationCooldown = 0;
     private int teleportCooldown = 6000;
+    private int countdown = 0;
+    private int textCooldown = 0;
+    private int takeCooldown = 0;
     private boolean magic = false;
     public static PlayerEntity playerTarget;
     public InvalidGenieEntity(EntityType<? extends InvalidGenieEntity> entityType, World world) {
@@ -80,6 +90,16 @@ public class InvalidGenieEntity extends FlyingEntity implements Flutterer {
     private void magicAnimate(){
         this.magicAnimationState.start(this.age);
         this.getWorld().addParticle(ParticleTypes.EFFECT, this.getX(), this.getY() + 0.5, this.getZ(), 0, 1, 0);
+    }
+    private boolean endCooldown(){
+        if(textCooldown <= 0){
+            textCooldown = 100;
+            return true;
+        }
+        else{
+            --textCooldown;
+            return false;
+        }
     }
     public boolean isMagic(){
         return this.magic;
@@ -162,31 +182,47 @@ public class InvalidGenieEntity extends FlyingEntity implements Flutterer {
                                 state == Blocks.FURNACE.getDefaultState().with(AbstractFurnaceBlock.LIT, true).with(AbstractFurnaceBlock.FACING, Direction.EAST) ||
                                 state == Blocks.FURNACE.getDefaultState().with(AbstractFurnaceBlock.LIT, true).with(AbstractFurnaceBlock.FACING, Direction.SOUTH)){
                             magicBlock(0, BlockPos.ofFloored(player.getX() + x, player.getY() + y, player.getZ() + z), state);
+                            if(endCooldown()) {
+                                playerTarget.sendMessage(Text.translatable("text.invalid_genie.furnace_replace"));
+                            }
                         }
                         if(state == Blocks.BLAST_FURNACE.getDefaultState().with(AbstractFurnaceBlock.LIT, true).with(AbstractFurnaceBlock.FACING, Direction.NORTH) ||
                                 state == Blocks.BLAST_FURNACE.getDefaultState().with(AbstractFurnaceBlock.LIT, true).with(AbstractFurnaceBlock.FACING, Direction.WEST) ||
                                 state == Blocks.BLAST_FURNACE.getDefaultState().with(AbstractFurnaceBlock.LIT, true).with(AbstractFurnaceBlock.FACING, Direction.EAST) ||
                                 state == Blocks.BLAST_FURNACE.getDefaultState().with(AbstractFurnaceBlock.LIT, true).with(AbstractFurnaceBlock.FACING, Direction.SOUTH)){
                             magicBlock(0, BlockPos.ofFloored(player.getX() + x, player.getY() + y, player.getZ() + z), state);
+                            if(endCooldown()) {
+                                playerTarget.sendMessage(Text.translatable("text.invalid_genie.furnace_replace"));
+                            }
                         }
                         if(state == Blocks.SMOKER.getDefaultState().with(AbstractFurnaceBlock.LIT, true).with(AbstractFurnaceBlock.FACING, Direction.NORTH) ||
                                 state == Blocks.SMOKER.getDefaultState().with(AbstractFurnaceBlock.LIT, true).with(AbstractFurnaceBlock.FACING, Direction.WEST) ||
                                 state == Blocks.SMOKER.getDefaultState().with(AbstractFurnaceBlock.LIT, true).with(AbstractFurnaceBlock.FACING, Direction.EAST) ||
                                 state == Blocks.SMOKER.getDefaultState().with(AbstractFurnaceBlock.LIT, true).with(AbstractFurnaceBlock.FACING, Direction.SOUTH)){
                             magicBlock(1, BlockPos.ofFloored(player.getX() + x, player.getY() + y, player.getZ() + z), state);
+                            if(endCooldown()) {
+                                playerTarget.sendMessage(Text.translatable("text.invalid_genie.furnace_replace"));
+                            }
                         }
                         if(state == Blocks.LAVA.getDefaultState()){
                             magicBlock(2, BlockPos.ofFloored(player.getX() + x, player.getY() + y, player.getZ() + z), state);
+                            if(endCooldown()) {
+                                playerTarget.sendMessage(Text.translatable("text.invalid_genie.lava_replace"));
+                            }
                         }
                         if(state == Blocks.WATER.getDefaultState()){
                             magicBlock(3, BlockPos.ofFloored(player.getX() + x, player.getY() + y, player.getZ() + z), state);
+                            if(endCooldown()) {
+                                playerTarget.sendMessage(Text.translatable("text.invalid_genie.water_replace"));
+                            }
                         }
                         if(state == Blocks.COPPER_ORE.getDefaultState() ||
                                 state == Blocks.IRON_ORE.getDefaultState() ||
                                 state == Blocks.GOLD_ORE.getDefaultState() ||
                                 state == Blocks.DIAMOND_ORE.getDefaultState() ||
                                 state == Blocks.EMERALD_ORE.getDefaultState() ||
-                                state == Blocks.LAPIS_ORE.getDefaultState()){
+                                state == Blocks.LAPIS_ORE.getDefaultState() ||
+                                state == Blocks.REDSTONE_ORE.getDefaultState()){
                             magicBlock(4, BlockPos.ofFloored(player.getX() + x, player.getY() + y, player.getZ() + z), state);
                         }
                         if(state == Blocks.NETHER_GOLD_ORE.getDefaultState()){
@@ -194,12 +230,36 @@ public class InvalidGenieEntity extends FlyingEntity implements Flutterer {
                             this.getWorld().spawnEntity(piglin);
                             piglin.setPos(player.getX() + x, player.getY() + y + 1, player.getZ() + z);
                             this.getWorld().setBlockState(BlockPos.ofFloored(player.getX() + x, player.getY() + y, player.getZ() + z), Blocks.NETHERRACK.getDefaultState());
+                            if(endCooldown()) {
+                                playerTarget.sendMessage(Text.translatable("text.invalid_genie.nether_gold"));
+                            }
                         }
                         if(state == Blocks.BEE_NEST.getDefaultState().with(BeehiveBlock.HONEY_LEVEL, 5).with(BeehiveBlock.FACING, Direction.NORTH) ||
                                 state == Blocks.BEE_NEST.getDefaultState().with(BeehiveBlock.HONEY_LEVEL, 5).with(BeehiveBlock.FACING, Direction.SOUTH) ||
                                 state == Blocks.BEE_NEST.getDefaultState().with(BeehiveBlock.HONEY_LEVEL, 5).with(BeehiveBlock.FACING, Direction.WEST) ||
                                 state == Blocks.BEE_NEST.getDefaultState().with(BeehiveBlock.HONEY_LEVEL, 5).with(BeehiveBlock.FACING, Direction.EAST)){
                             magicBlock(5, BlockPos.ofFloored(player.getX() + x, player.getY() + y, player.getZ() + z), state);
+                            if(endCooldown()) {
+                                playerTarget.sendMessage(Text.translatable("text.invalid_genie.bee_nest"));
+                            }
+                        }
+                        if(state == Blocks.END_PORTAL_FRAME.getDefaultState().with(EndPortalFrameBlock.EYE, true).with(EndPortalFrameBlock.FACING, Direction.NORTH) ||
+                                state == Blocks.END_PORTAL_FRAME.getDefaultState().with(EndPortalFrameBlock.EYE, true).with(EndPortalFrameBlock.FACING, Direction.SOUTH) ||
+                                state == Blocks.END_PORTAL_FRAME.getDefaultState().with(EndPortalFrameBlock.EYE, true).with(EndPortalFrameBlock.FACING, Direction.WEST) ||
+                                state == Blocks.END_PORTAL_FRAME.getDefaultState().with(EndPortalFrameBlock.EYE, true).with(EndPortalFrameBlock.FACING, Direction.EAST)){
+                            if(takeCooldown <= 0) {
+                                magicBlock(6, BlockPos.ofFloored(player.getX() + x, player.getY() + y, player.getZ() + z), state);
+                                if (endCooldown()) {
+                                    playerTarget.sendMessage(Text.translatable("text.invalid_genie.end_portal"));
+                                }
+                                takeCooldown = 200;
+                            }
+                            else{
+                                --takeCooldown;
+                            }
+                        }
+                        if(state == Blocks.END_PORTAL.getDefaultState() && takeCooldown <= 3){
+                            this.getWorld().setBlockState(BlockPos.ofFloored(player.getX() + x, player.getY() + y, player.getZ() + z), Blocks.AIR.getDefaultState());
                         }
                     }
                 }
@@ -215,24 +275,39 @@ public class InvalidGenieEntity extends FlyingEntity implements Flutterer {
                     ItemStack item = player.getMainHandStack();
                     item.addEnchantment(Enchantments.VANISHING_CURSE, 1);
                     this.setMagic(true);
+                    if(endCooldown()) {
+                        playerTarget.sendMessage(Text.translatable("text.invalid_genie.tool_ench"));
+                    }
                 }
             }
             if(player.getArmor() > 0){
                 if(player.getEquippedStack(EquipmentSlot.HEAD) != null && !player.getEquippedStack(EquipmentSlot.HEAD).hasEnchantments()){
                     player.getEquippedStack(EquipmentSlot.HEAD).addEnchantment(Enchantments.BINDING_CURSE, 1);
                     this.setMagic(true);
+                    if(endCooldown()) {
+                        playerTarget.sendMessage(Text.translatable("text.invalid_genie.armor_ench"));
+                    }
                 }
                 if(player.getEquippedStack(EquipmentSlot.CHEST) != null && !player.getEquippedStack(EquipmentSlot.CHEST).hasEnchantments()){
                     player.getEquippedStack(EquipmentSlot.CHEST).addEnchantment(Enchantments.BINDING_CURSE, 1);
                     this.setMagic(true);
+                    if(endCooldown()) {
+                        playerTarget.sendMessage(Text.translatable("text.invalid_genie.armor_ench"));
+                    }
                 }
                 if(player.getEquippedStack(EquipmentSlot.LEGS) != null && !player.getEquippedStack(EquipmentSlot.LEGS).hasEnchantments()){
                     player.getEquippedStack(EquipmentSlot.LEGS).addEnchantment(Enchantments.BINDING_CURSE, 1);
                     this.setMagic(true);
+                    if(endCooldown()) {
+                        playerTarget.sendMessage(Text.translatable("text.invalid_genie.armor_ench"));
+                    }
                 }
                 if(player.getEquippedStack(EquipmentSlot.FEET) != null && !player.getEquippedStack(EquipmentSlot.FEET).hasEnchantments()){
                     player.getEquippedStack(EquipmentSlot.FEET).addEnchantment(Enchantments.BINDING_CURSE, 1);
                     this.setMagic(true);
+                    if(endCooldown()) {
+                        playerTarget.sendMessage(Text.translatable("text.invalid_genie.armor_ench"));
+                    }
                 }
             }
             Box box = new Box(this.getBlockPos()).expand(20);
@@ -246,12 +321,76 @@ public class InvalidGenieEntity extends FlyingEntity implements Flutterer {
                     this.getWorld().addParticle(ParticleTypes.CLOUD, entity.getX(),  entity.getY() + 2, entity.getZ(), 0, 1, 0);
                     this.getWorld().addParticle(ParticleTypes.DRIPPING_WATER, entity.getX(),  entity.getY() + 2, entity.getZ(), 0, -1, 0);
                 }
+                if(endCooldown()) {
+                    playerTarget.sendMessage(Text.translatable("text.invalid_genie.remove_fire"));
+                }
             }
-            if(player.getMainHandStack().getItem().isFood()){
+            List<EndermanEntity> enderList = this.getWorld().getEntitiesByClass(EndermanEntity.class, box, e->e.isAlive());
+            if(!enderList.isEmpty()){
+                for(int i = 0; i < enderList.size(); i++){
+                    EndermanEntity enderman = enderList.get(i);
+                    enderman.setTarget(playerTarget);
+                }
+                if(endCooldown()) {
+                    playerTarget.sendMessage(Text.translatable("text.invalid_genie.anger_ender"));
+                }
+            }
+            if(player.getMainHandStack().getItem().isFood() && player.getMainHandStack().getItem() != Items.CHORUS_FRUIT && player.getMainHandStack().getItem() != Items.GOLDEN_APPLE){
                 int count = player.getMainHandStack().getCount();
                 player.setStackInHand(player.getActiveHand(), Items.CHORUS_FRUIT.getDefaultStack());
                 player.getStackInHand(player.getActiveHand()).setCount(count);
                 this.setMagic(true);
+                if(endCooldown()) {
+                    playerTarget.sendMessage(Text.translatable("text.invalid_genie.food_replace"));
+                }
+            }
+            if(!player.getStatusEffects().isEmpty()){
+                for(int i = 0; i < player.getStatusEffects().size(); i++){
+                    if(player.getStatusEffects().contains(StatusEffects.BAD_OMEN) ||
+                            player.getStatusEffects().contains(StatusEffects.BLINDNESS) ||
+                            player.getStatusEffects().contains(StatusEffects.DARKNESS) ||
+                            player.getStatusEffects().contains(StatusEffects.HUNGER) ||
+                            player.getStatusEffects().contains(StatusEffects.MINING_FATIGUE) ||
+                            player.getStatusEffects().contains(StatusEffects.NAUSEA) ||
+                            player.getStatusEffects().contains(StatusEffects.SLOWNESS) ||
+                            player.getStatusEffects().contains(StatusEffects.UNLUCK) ||
+                            player.getStatusEffects().contains(StatusEffects.WEAKNESS) ||
+                            player.getStatusEffects().contains(StatusEffects.WITHER)){
+                        player.clearStatusEffects();
+                        player.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 200, 2));
+                        if(endCooldown()) {
+                            playerTarget.sendMessage(Text.translatable("text.invalid_genie.remove_effects"));
+                        }
+                    }
+                }
+            }
+            if(player.isUsingItem() && player.getMainHandStack().getItem() == Items.GOLDEN_APPLE){
+                if(countdown <= 0) {
+                    double max = player.getAttributeValue(EntityAttributes.GENERIC_MAX_HEALTH);
+                    double f = max - 2;
+                    player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(f);
+                    countdown = 40;
+                    if(endCooldown()){
+                        playerTarget.sendMessage(Text.translatable("text.invalid_genie.increase_health"));
+                    }
+                }
+                else{
+                    --countdown;
+                }
+            }
+            if(player.getHungerManager().getFoodLevel() <= 10){
+                if(countdown <= 0){
+                    int max = player.getHungerManager().getFoodLevel();
+                    int f = max - 2;
+                    player.getHungerManager().setFoodLevel(f);
+                    countdown = 100;
+                    if(endCooldown()){
+                        playerTarget.sendMessage(Text.translatable("text.invalid_genie.add_hunger"));
+                    }
+                }
+                else{
+                    --countdown;
+                }
             }
         }
     }
@@ -294,10 +433,19 @@ public class InvalidGenieEntity extends FlyingEntity implements Flutterer {
         }
         if(index == 5){
             this.getWorld().setBlockState(pos, Blocks.BEE_NEST.getStateWithProperties(state).with(BeehiveBlock.HONEY_LEVEL, 0));
-            PotionEntity item = new PotionEntity(this.getWorld(), pos.getX(), pos.getY() - 1, pos.getZ());
+            ItemEntity item = new ItemEntity(this.getWorld(), pos.getX(), pos.getY() - 1, pos.getZ(), Items.HONEY_BOTTLE.getDefaultStack());
             this.getWorld().spawnEntity(item);
             item.setPos(pos.getX(), pos.getY() - 1, pos.getZ());
-            PotionUtil.setPotion(item.getStack(), Potions.STRONG_POISON);
+            Box box = new Box(pos).expand(8, 6, 8);
+            List<BeeEntity> list = this.getWorld().getEntitiesByClass(BeeEntity.class, box, e->e.isAlive());
+            for(int i = 0; i < list.size(); i++){
+                BeeEntity bee = list.get(i);
+                bee.setTarget(playerTarget);
+            }
+        }
+        if(index == 6){
+            this.getWorld().setBlockState(pos, Blocks.END_PORTAL_FRAME.getStateWithProperties(state).with(EndPortalFrameBlock.EYE, false));
+            playerTarget.giveItemStack(Items.ENDER_EYE.getDefaultStack());
         }
     }
     private class GenieMoveControl extends MoveControl {

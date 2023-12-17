@@ -1,3 +1,18 @@
 {
-  "entity.invalid_genie.invalid_genie": "Invalid genie"
+  "entity.invalid_genie.invalid_genie": "Invalid genie",
+  "text.invalid_genie.furnace_replace": "<Invalid genie> This furnace will speed up the smelting!",
+  "text.invalid_genie.lava_replace": "<Invalid genie> The lava is dangerous!",
+  "text.invalid_genie.water_replace": "<Invalid genie> It's difficult to walk in water...",
+  "text.invalid_genie.nether_gold": "<Invalid genie> Gold? Here's piglins for trading!",
+  "text.invalid_genie.bee_nest": "<Invalid genie> Hey, it's a bee nest! There's tasty honey!",
+  "text.invalid_genie.tool_ench": "<Invalid genie> Your tools need enchantments!",
+  "text.invalid_genie.armor_ench": "<Invalid genie> The armor won't be that strong without enchantments...",
+  "text.invalid_genie.remove_fire": "<Invalid genie> Oh no! Someone is burning!",
+  "text.invalid_genie.food_replace": "<Invalid genie> That is much tastier!",
+  "text.invalid_genie.anger_ender": "<Invalid genie> The endermans are too far... Now they will go to you!",
+  "text.invalid_genie.remove_effects": "<Invalid genie> The harmful effects are too harmful...",
+  "text.invalid_genie.increase_health": "<Invalid genie> The absorption needs strength.",
+  "text.invalid_genie.end_portal": "<Invalid genie> Here's eye of ender!",
+  "text.invalid_genie.add_hunger": "<Invalid genie> Oh no! You have hunger! Now I'll help!",
+  "gamerule.jaxMode": "Jax (from ADC) mode"
 }

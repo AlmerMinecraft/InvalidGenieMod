@@ -1,3 +1,18 @@
 {
-  "entity.invalid_genie.invalid_genie": "Неправильный джинн"
+  "entity.invalid_genie.invalid_genie": "Неправильный джинн",
+  "text.invalid_genie.furnace_replace": "<Неправильный джинн> Эта печка должна ускорить переплавку!",
+  "text.invalid_genie.lava_replace": "<Неправильный джинн> Лава опасна!",
+  "text.invalid_genie.water_replace": "<Неправильный джинн> В воде сложно ходить...",
+  "text.invalid_genie.nether_gold": "<Неправильный джинн> Золото? Вот пиглины для торговли!",
+  "text.invalid_genie.bee_nest": "<Неправильный джинн> О, улей! В нём есть вкусный мёд!",
+  "text.invalid_genie.tool_ench": "<Неправильный джинн> Твоим инструментам не хватает зачарований!",
+  "text.invalid_genie.armor_ench": "<Неправильный джинн> Броня будет не такой сильной без зачарований...",
+  "text.invalid_genie.remove_fire": "<Неправильный джинн> О нет! Кто-то горит!",
+  "text.invalid_genie.food_replace": "<Неправильный джинн> Вот это будет повкуснее!",
+  "text.invalid_genie.anger_ender": "<Неправильный джинн> Как-то далеко эндермены... Сейчас они прибегут к тебе!",
+  "text.invalid_genie.remove_effects": "<Неправильный джинн> Плохие эффекты слишком плохие...",
+  "text.invalid_genie.increase_health": "<Неправильный джинн> Поглощение нуждается в усилении.",
+  "text.invalid_genie.end_portal": "<Неправильный джинн> Вот око эндера!",
+  "text.invalid_genie.add_hunger": "<Неправильный джинн> О нет! У тебя мало голода! Сейчас я помогу!",
+  "gamerule.jaxMode": "Режим Джекса (из УЦЦ)"
 }
